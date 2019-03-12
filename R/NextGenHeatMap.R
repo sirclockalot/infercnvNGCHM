@@ -17,14 +17,12 @@
 #' @slot high_threshold (integer) Values for maximum threshold for heatmap coloring. 
 #' @slot reference_cells (character) Vector of reference cell ID's 
 #' @slot reference_groups (character) Vector of reference cell group ID's 
-#'
-#' @include inferCNV.R
 #' 
 #' @return Returns a NGCHM_inferCNV_obj
 #' @export 
 #' 
 ## build off of the present S4 object inferCNV_obj to add more slots 
-NGCHM_inferCNV <- setClass("NGCHM_inferCNV", slots = c( args           = "list",
+NGCHM_inferCNV <- methods::setClass("NGCHM_inferCNV", slots = c( args           = "list",
                                                         low_threshold  = "numeric",
                                                         high_threshold = "numeric",
                                                         reference_cells = "character",
@@ -177,6 +175,8 @@ setMethod(f = "getGeneData",
 ################################################
 # NGCHM and NGCHM_infercnv Object Manipulation #
 ################################################
+
+
 
 #' Initialize the NGCHM_inferCNV_obj object 
 #' 
@@ -568,6 +568,10 @@ setMethod(f="setColCovariateBar",
           signature="NGCHM_inferCNV",
           definition=function(obj, hm)
           {
+              # Returns the color palette for contigs.
+              get_group_color_palette <- function(){
+                  return(colorRampPalette(RColorBrewer::brewer.pal(12,"Set3")))
+              }
               # map the genes to their chromosome 
               ## gene_locations: created earlier, Genes and their locations 
               chr_labels <- as.vector(getUniqueChr(obj)) # as vector removes the levels
@@ -617,6 +621,10 @@ setMethod(f="setRowCovariateBar",
           signature="NGCHM_inferCNV",
           definition=function(obj, hm)
           {
+              # Returns the color palette for contigs.
+              get_group_color_palette <- function(){
+                  return(colorRampPalette(RColorBrewer::brewer.pal(12,"Set3")))
+              }
               # get the row grouping information 
               row_groups <- getRowGrouping(obj)
               # create covariate bar from dendrogram groups
@@ -844,7 +852,7 @@ Create_NGCHM <- function(infercnv_obj,
     #----------------------Initialize Next Generation Clustered Heat Map------------------------------------------------------------------
     
     ## create the S4 object
-    NGCHM_inferCNV_obj <- new("NGCHM_inferCNV")
+    NGCHM_inferCNV_obj <- methods::new("NGCHM_inferCNV")
     NGCHM_inferCNV_obj <- initializeNGCHMObject(NGCHM_inferCNV_obj, 
                                                 args_parsed,
                                                 infercnv_obj)
@@ -862,10 +870,6 @@ Create_NGCHM <- function(infercnv_obj,
     hm <- setDivisions(NGCHM_inferCNV_obj, hm)
     
     #----------------------Create Covariate Bars----------------------------------------------------------------------------------------------------------------------------------------
-    # Returns the color palette for contigs.
-    get_group_color_palette <- function(){
-        return(colorRampPalette(RColorBrewer::brewer.pal(12,"Set3")))
-    }
     
     # COLUMN Covariate bar
     hm <- setColCovariateBar(NGCHM_inferCNV_obj,hm)
