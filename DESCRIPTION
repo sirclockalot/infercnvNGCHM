@@ -5,7 +5,7 @@ Version: 0.1.0
 Date: 2018-02-11
 Authors@R: c( person("Timothy", "Tickle", email = "ttickle@broadinstitute.org", role = c("aut", "cre")), person("Itay", "Tirosh", email = "tirosh@broadinstitute.org", role = "aut"), person("Christophe", "Georgescu", email = "cgeorges@broadinstitute.org", role = "aut"), person("Maxwell", "Brown", email = "mbrown@broadinstitute.org", role = "aut"), person("Brian", "Haas", email = "bhaas@broadinstitute.org", role = "aut")) 
 Author: Timothy Tickle [aut, cre], Itay Tirosh [aut], Christophe Georgescu [aut], Maxwell Brown [aut], Brian Haas [aut]
-Maintainer: Christophe Georgescu <cgeorges@broadinstitute.org>
+Maintainer: Maxwell Brown <mbrown@broadinstitute.org>
 BugReports: https://github.com/broadinstitute/inferCNV_NGCHM/issues
 Description: Using Next Generation Clustered Heat Map (NGCHM) to create interactive heatmaps to visualize CNV's identified by inferCNV. 
 Depends: R(>= 3.2.1)
