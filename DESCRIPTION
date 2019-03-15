@@ -15,7 +15,7 @@ Suggests: testthat
 RoxygenNote: 6.1.1
 NeedsCompilation: no
 Remotes: github::broadinstitute/infercnv, github::bmbroom/NGCHMR
-Imports: coda, argparse, RColorBrewer, futile.logger, methods
+Imports: infercnv, NGCHM, coda, argparse, RColorBrewer, futile.logger, methods
 Collate: 
     'inferCNV_constants.R'
     'NextGenHeatMap.R'

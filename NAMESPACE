@@ -3,7 +3,6 @@
 export(Create_NGCHM)
 export(ngchm)
 exportClasses(NGCHM_inferCNV)
-exportMethods(setColors)
 import(NGCHM)
 import(RColorBrewer)
 import(argparse)
