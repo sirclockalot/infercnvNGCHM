@@ -1,0 +1,7 @@
+language: r
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install r-cran-rjags
+
+r_check_args: --no-build-vignettes # --no-manual

@@ -17,14 +17,12 @@
 #' @slot high_threshold (integer) Values for maximum threshold for heatmap coloring. 
 #' @slot reference_cells (character) Vector of reference cell ID's 
 #' @slot reference_groups (character) Vector of reference cell group ID's 
-#'
-#' @include inferCNV.R
 #' 
 #' @return Returns a NGCHM_inferCNV_obj
 #' @export 
 #' 
 ## build off of the present S4 object inferCNV_obj to add more slots 
-NGCHM_inferCNV <- setClass("NGCHM_inferCNV", slots = c( args           = "list",
+NGCHM_inferCNV <- methods::setClass("NGCHM_inferCNV", slots = c( args           = "list",
                                                         low_threshold  = "numeric",
                                                         high_threshold = "numeric",
                                                         reference_cells = "character",
@@ -43,14 +41,14 @@ NGCHM_inferCNV <- setClass("NGCHM_inferCNV", slots = c( args           = "list",
 #'
 #' @return low_threshold.
 #'
-#' @exportMethod lowThreshold
 #' @rdname lowThreshold-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name = "lowThreshold", 
            def = function(obj) standardGeneric("lowThreshold"))
 #' @rdname lowThreshold-method
 #' @aliases lowThreshold
-#' 
+#' @noRd
 setMethod(f = "lowThreshold", 
           signature = "NGCHM_inferCNV", 
           definition=function(obj) obj@low_threshold)
@@ -63,14 +61,15 @@ setMethod(f = "lowThreshold",
 #'
 #' @return high_threshold.
 #'
-#' @exportMethod highThreshold
 #' @rdname highThreshold-method
-#' 
+#' @keywords internal 
+#' @noRd
 setGeneric(name = "highThreshold", 
            def = function(obj) standardGeneric("highThreshold"))
+
 #' @rdname highThreshold-method
 #' @aliases highThreshold
-#' 
+#' @noRd
 setMethod(f = "highThreshold", 
           signature = "NGCHM_inferCNV", 
           definition=function(obj) obj@high_threshold)
@@ -82,14 +81,15 @@ setMethod(f = "highThreshold",
 #'
 #' @return x.center.
 #'
-#' @exportMethod getCenter
 #' @rdname getCenter-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name = "getCenter", 
            def = function(obj) standardGeneric("getCenter"))
+
 #' @rdname getCenter-method
 #' @aliases getCenter
-#' 
+#' @noRd
 setMethod(f = "getCenter", 
           signature = "NGCHM_inferCNV", 
           definition=function(obj) obj@args$x.center)
@@ -101,14 +101,15 @@ setMethod(f = "getCenter",
 #'
 #' @return exp.data
 #'
-#' @exportMethod getExpData
 #' @rdname getExpData-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name = "getExpData", 
            def = function(obj) standardGeneric("getExpData"))
+
 #' @rdname getExpData-method
 #' @aliases getExpData
-#' 
+#' @noRd
 setMethod(f = "getExpData", 
           signature = "NGCHM_inferCNV", 
           definition=function(obj) obj@expr.data)
@@ -120,14 +121,15 @@ setMethod(f = "getExpData",
 #'
 #' @return title.
 #'
-#' @exportMethod getTitle
 #' @rdname getTitle-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name = "getTitle", 
            def = function(obj) standardGeneric("getTitle"))
+
 #' @rdname getTitle-method
 #' @aliases getTitle
-#' 
+#' @noRd
 setMethod(f = "getTitle", 
           signature = "NGCHM_inferCNV", 
           definition=function(obj) obj@args$title)
@@ -141,14 +143,15 @@ setMethod(f = "getTitle",
 #'
 #' @return list containing observed indices.
 #'
-#' @exportMethod getObserved
 #' @rdname getObserved-method
-#' 
+#' @keywords internal 
+#' @noRd
 setGeneric(name = "getObserved", 
            def = function(obj) standardGeneric("getObserved"))
+
 #' @rdname getObserved-method
 #' @aliases getObserved
-#' 
+#' @noRd
 setMethod(f = "getObserved", 
           signature = "NGCHM_inferCNV", 
           definition=function(obj) obj@observation_grouped_cell_indices)
@@ -160,14 +163,15 @@ setMethod(f = "getObserved",
 #'
 #' @return gene_order.
 #'
-#' @exportMethod getGeneData
 #' @rdname getGeneData-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name = "getGeneData", 
            def = function(obj) standardGeneric("getGeneData"))
+
 #' @rdname getGeneData-method
 #' @aliases getGeneData
-#' 
+#' @noRd
 setMethod(f = "getGeneData", 
           signature = "NGCHM_inferCNV", 
           definition=function(obj) obj@gene_order)
@@ -178,6 +182,34 @@ setMethod(f = "getGeneData",
 # NGCHM and NGCHM_infercnv Object Manipulation #
 ################################################
 
+#' @title get_average_bounds()
+#'
+#' @description Computes the mean of the upper and lower bound for the data across all cells.
+#'
+#' @param infercnv_obj infercnv_object
+#'
+#' @return (lower_bound, upper_bound)
+#'
+#' @keywords internal
+#' @noRd
+#'
+
+get_average_bounds <- function (infercnv_obj) { return(.get_average_bounds(infercnv_obj@expr.data)) }
+
+#' @keywords internal
+#' @noRd
+
+.get_average_bounds <- function(expr_matrix) {
+    
+    lower_bound <- mean(apply(expr_matrix, 2,
+                              function(x) quantile(x, na.rm=TRUE)[[1]]))
+    upper_bound <- mean(apply(expr_matrix, 2,
+                              function(x) quantile(x, na.rm=TRUE)[[5]]))
+    
+    return(c(lower_bound, upper_bound))
+}
+
+
 #' Initialize the NGCHM_inferCNV_obj object 
 #' 
 #' @param obj The NGCHM_inferCNV_obj S4 object.
@@ -186,9 +218,9 @@ setMethod(f = "getGeneData",
 #' 
 #' @return obj The NGCHM_inferCNV_obj S4 object.
 #' 
-#' @exportMethod initializeNGCHMObject
 #' @rdname initializeNGCHMObject-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="initializeNGCHMObject",
            def=function(obj, args_parsed, infercnv_obj)
            { standardGeneric("initializeNGCHMObject") }
@@ -196,7 +228,7 @@ setGeneric(name="initializeNGCHMObject",
 
 #' @rdname initializeNGCHMObject-method
 #' @aliases initializeNGCHMObject
-#' 
+#' @noRd
 setMethod(f="initializeNGCHMObject",
           signature="NGCHM_inferCNV",
           definition=function(obj, args_parsed, infercnv_obj)
@@ -231,7 +263,7 @@ setMethod(f="initializeNGCHMObject",
                   }
               } else {
                   ## else, if not given, set the values 
-                  bounds <- infercnv::get_average_bounds(obj)
+                  bounds <- get_average_bounds(obj)
                   obj@low_threshold <- as.numeric(bounds[1])
                   obj@high_threshold <- as.numeric(bounds[2])
               }
@@ -261,9 +293,9 @@ setMethod(f="initializeNGCHMObject",
 #' 
 #' @return hm: The NGCHM S4 object.
 #' 
-#' @exportMethod setNGCHMObject
 #' @rdname setNGCHMObject-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="setNGCHMObject",
            def=function(obj, hm)
            { standardGeneric("setNGCHMObject") }
@@ -271,7 +303,7 @@ setGeneric(name="setNGCHMObject",
 
 #' @rdname setNGCHMObject-method
 #' @aliases setNGCHMObject
-#' 
+#' @noRd
 setMethod(f="setNGCHMObject",
           signature="NGCHM_inferCNV",
           definition=function(obj, hm)
@@ -291,13 +323,12 @@ setMethod(f="setNGCHMObject",
 #' Import the row groupings 
 #' 
 #' @param obj The NGCHM_inferCNV_obj S4 object.
-#' @param hm NGCHM object
 #' 
 #' @return table containing the grouping of the rows 
 #' 
-#' @exportMethod getRowGrouping
 #' @rdname getRowGrouping-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="getRowGrouping",
            def=function(obj)
            { standardGeneric("getRowGrouping") }
@@ -305,7 +336,7 @@ setGeneric(name="getRowGrouping",
 
 #' @rdname getRowGrouping-method
 #' @aliases getRowGrouping
-#' 
+#' @noRd
 setMethod(f="getRowGrouping",
           signature="NGCHM_inferCNV",
           definition=function(obj)
@@ -327,9 +358,9 @@ setMethod(f="getRowGrouping",
 #' 
 #' @return hm: The NGCHM S4 object.
 #' 
-#' @exportMethod setRows
 #' @rdname setRows-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="setRows",
            def=function(obj, hm)
            { standardGeneric("setRows") }
@@ -337,7 +368,7 @@ setGeneric(name="setRows",
 
 #' @rdname setRows-method
 #' @aliases setRows
-#' 
+#' @noRd
 setMethod(f="setRows",
           signature="NGCHM_inferCNV",
           definition=function(obj, hm)
@@ -375,13 +406,12 @@ setMethod(f="setRows",
 #' Get the unique contigs in the correct order
 #' 
 #' @param obj The NGCHM_inferCNV_obj S4 object.
-#' @param hm NGCHM object
 #' 
 #' @return hm: The NGCHM S4 object.
 #' 
-#' @exportMethod getUniqueChr
 #' @rdname getUniqueChr-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="getUniqueChr",
            def=function(obj)
            { standardGeneric("getUniqueChr") }
@@ -389,7 +419,7 @@ setGeneric(name="getUniqueChr",
 
 #' @rdname getUniqueChr-method
 #' @aliases getUniqueChr
-#' 
+#' @noRd
 setMethod(f="getUniqueChr",
           signature="NGCHM_inferCNV",
           definition=function(obj)
@@ -401,13 +431,12 @@ setMethod(f="getUniqueChr",
 #' Get all the contigs in the correct order
 #' 
 #' @param obj The NGCHM_inferCNV_obj S4 object.
-#' @param hm NGCHM object
 #' 
 #' @return hm: The NGCHM S4 object.
 #' 
-#' @exportMethod getChr
 #' @rdname getChr-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="getChr",
            def=function(obj)
            { standardGeneric("getChr") }
@@ -415,7 +444,7 @@ setGeneric(name="getChr",
 
 #' @rdname getChr-method
 #' @aliases getChr
-#' 
+#' @noRd
 setMethod(f="getChr",
           signature="NGCHM_inferCNV",
           definition=function(obj)
@@ -427,13 +456,12 @@ setMethod(f="getChr",
 #' Get the gene names
 #' 
 #' @param obj The NGCHM_inferCNV_obj S4 object.
-#' @param hm NGCHM object
 #' 
-#' @return hm: The NGCHM S4 object.
+#' @return Gene Locations
 #' 
-#' @exportMethod getGenes
 #' @rdname getGenes-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="getGenes",
            def=function(obj)
            { standardGeneric("getGenes") }
@@ -441,7 +469,7 @@ setGeneric(name="getGenes",
 
 #' @rdname getGenes-method
 #' @aliases getGenes
-#' 
+#' @noRd
 setMethod(f="getGenes",
           signature="NGCHM_inferCNV",
           definition=function(obj)
@@ -465,9 +493,9 @@ setMethod(f="getGenes",
 #' 
 #' @return layer: color mapping object used for NGCHM heatmap generation
 #' 
-#' @exportMethod setColors
 #' @rdname setColors-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="setColors",
            def=function(obj)
            { standardGeneric("setColors") }
@@ -475,7 +503,7 @@ setGeneric(name="setColors",
 
 #' @rdname setColors-method
 #' @aliases setColors
-#' 
+#' @noRd
 setMethod(f="setColors",
           signature="NGCHM_inferCNV",
           definition=function(obj)
@@ -499,9 +527,9 @@ setMethod(f="setColors",
 #' 
 #' @return hm: The NGCHM S4 object.
 #' 
-#' @exportMethod setDivisions
 #' @rdname setDivisions-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="setDivisions",
            def=function(obj, hm)
            { standardGeneric("setDivisions") }
@@ -509,7 +537,7 @@ setGeneric(name="setDivisions",
 
 #' @rdname setDivisions-method
 #' @aliases setDivisions
-#' 
+#' @noRd
 setMethod(f="setDivisions",
           signature="NGCHM_inferCNV",
           definition=function(obj, hm)
@@ -557,9 +585,9 @@ setMethod(f="setDivisions",
 #' 
 #' @return hm: The NGCHM S4 object.
 #' 
-#' @exportMethod setColCovariateBar
 #' @rdname setColCovariateBar-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="setColCovariateBar",
            def=function(obj, hm)
            { standardGeneric("setColCovariateBar") }
@@ -567,11 +595,15 @@ setGeneric(name="setColCovariateBar",
 
 #' @rdname setColCovariateBar-method
 #' @aliases setColCovariateBar
-#' 
+#' @noRd
 setMethod(f="setColCovariateBar",
           signature="NGCHM_inferCNV",
           definition=function(obj, hm)
           {
+              # Returns the color palette for contigs.
+              get_group_color_palette <- function(){
+                  return(colorRampPalette(RColorBrewer::brewer.pal(12,"Set3")))
+              }
               # map the genes to their chromosome 
               ## gene_locations: created earlier, Genes and their locations 
               chr_labels <- as.vector(getUniqueChr(obj)) # as vector removes the levels
@@ -606,9 +638,9 @@ setMethod(f="setColCovariateBar",
 #' 
 #' @return hm: The NGCHM S4 object.
 #' 
-#' @exportMethod setRowCovariateBar
 #' @rdname setRowCovariateBar-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="setRowCovariateBar",
            def=function(obj, hm)
            { standardGeneric("setRowCovariateBar") }
@@ -616,11 +648,15 @@ setGeneric(name="setRowCovariateBar",
 
 #' @rdname setRowCovariateBar-method
 #' @aliases setRowCovariateBar
-#' 
+#' @noRd
 setMethod(f="setRowCovariateBar",
           signature="NGCHM_inferCNV",
           definition=function(obj, hm)
           {
+              # Returns the color palette for contigs.
+              get_group_color_palette <- function(){
+                  return(colorRampPalette(RColorBrewer::brewer.pal(12,"Set3")))
+              }
               # get the row grouping information 
               row_groups <- getRowGrouping(obj)
               # create covariate bar from dendrogram groups
@@ -715,9 +751,9 @@ setMethod(f="setRowCovariateBar",
 #' 
 #' @return hm: The NGCHM S4 object.
 #' 
-#' @exportMethod setCutsColor
 #' @rdname setCutsColor-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="setCutsColor",
            def=function(hm)
            { standardGeneric("setCutsColor") }
@@ -725,7 +761,7 @@ setGeneric(name="setCutsColor",
 
 #' @rdname setCutsColor-method
 #' @aliases setCutsColor
-#' 
+#' @noRd
 setMethod(f="setCutsColor",
           signature="ngchmVersion2",
           definition=function(hm)
@@ -741,12 +777,13 @@ setMethod(f="setCutsColor",
 #' Option to set the label display size 
 #' 
 #' @param hm NGCHM object
+#' @param size Size to use for the labels. 
 #' 
 #' @return hm: The NGCHM S4 object.
 #' 
-#' @exportMethod setLabelSize
 #' @rdname setLabelSize-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="setLabelSize",
            def=function(hm, size)
            { standardGeneric("setLabelSize") }
@@ -754,7 +791,7 @@ setGeneric(name="setLabelSize",
 
 #' @rdname setLabelSize-method
 #' @aliases setLabelSize
-#' 
+#' @noRd
 setMethod(f="setLabelSize",
           signature="ngchmVersion2",
           definition=function(hm, size)
@@ -768,12 +805,14 @@ setMethod(f="setLabelSize",
 #' Option to adjust the size of the heat map.
 #' 
 #' @param hm NGCHM object
+#' @param width Width of the heatmap
+#' @param hight Hight of the heatmap
 #' 
 #' @return hm: The NGCHM S4 object.
 #' 
-#' @exportMethod setHeatMapSize
 #' @rdname setHeatMapSize-method
-#' 
+#' @keywords internal
+#' @noRd
 setGeneric(name="setHeatMapSize",
            def=function(hm, width, hight)
            { standardGeneric("setHeatMapSize") }
@@ -781,7 +820,7 @@ setGeneric(name="setHeatMapSize",
 
 #' @rdname setHeatMapSize-method
 #' @aliases setHeatMapSize
-#' 
+#' @noRd
 setMethod(f="setHeatMapSize",
           signature="ngchmVersion2",
           definition=function(hm, width, hight)
@@ -811,11 +850,11 @@ setMethod(f="setHeatMapSize",
 #' @param x.center (integer) Center expression value for heatmap coloring.
 #' @param x.range (integer) Values for minimum and maximum thresholds for heatmap coloring. 
 #'
-#' @return
+#' @return a NGCHM file named infercnv.ngchm and saves it to the output directory given to infercnv. 
 #' 
-#' Exports a NGCHM file named infercnv.ngchm and saves it to the output directory given to infercnv. 
-# Requires:
-#	NGCHM, ape, RcolorBrewer
+#' @export
+#' 
+
 
 
 Create_NGCHM <- function(infercnv_obj,
@@ -845,7 +884,7 @@ Create_NGCHM <- function(infercnv_obj,
     #----------------------Initialize Next Generation Clustered Heat Map------------------------------------------------------------------
     
     ## create the S4 object
-    NGCHM_inferCNV_obj <- new("NGCHM_inferCNV")
+    NGCHM_inferCNV_obj <- methods::new("NGCHM_inferCNV")
     NGCHM_inferCNV_obj <- initializeNGCHMObject(NGCHM_inferCNV_obj, 
                                                 args_parsed,
                                                 infercnv_obj)
@@ -863,10 +902,6 @@ Create_NGCHM <- function(infercnv_obj,
     hm <- setDivisions(NGCHM_inferCNV_obj, hm)
     
     #----------------------Create Covariate Bars----------------------------------------------------------------------------------------------------------------------------------------
-    # Returns the color palette for contigs.
-    get_group_color_palette <- function(){
-        return(colorRampPalette(RColorBrewer::brewer.pal(12,"Set3")))
-    }
     
     # COLUMN Covariate bar
     hm <- setColCovariateBar(NGCHM_inferCNV_obj,hm)
