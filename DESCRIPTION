@@ -2,7 +2,7 @@ Package: infercnvNGCHM
 Type: Package
 Title: InferCNV Interface To Use Next Generation Clustered Heat Maps (NGCHM)
 Version: 0.1.0
-Date: 2018-02-11
+Date: 2018-11-02
 Authors@R: c( person("Timothy", "Tickle", email = "ttickle@broadinstitute.org", role = c("aut", "cre")), person("Itay", "Tirosh", email = "tirosh@broadinstitute.org", role = "aut"), person("Christophe", "Georgescu", email = "cgeorges@broadinstitute.org", role = "aut"), person("Maxwell", "Brown", email = "mbrown@broadinstitute.org", role = "aut"), person("Brian", "Haas", email = "bhaas@broadinstitute.org", role = "aut")) 
 Author: Timothy Tickle [aut, cre], Itay Tirosh [aut], Christophe Georgescu [aut], Maxwell Brown [aut], Brian Haas [aut]
 Maintainer: Maxwell Brown <mbrown@broadinstitute.org>
@@ -11,10 +11,11 @@ Description: Using Next Generation Clustered Heat Map (NGCHM) to create interact
 Depends: R(>= 3.2.1)
 License: BSD_3_clause + file LICENSE
 LazyData: TRUE
-Suggests: BiocStyle, knitr, rmarkdown, testthat
+Suggests: testthat
 RoxygenNote: 6.1.1
 NeedsCompilation: no
-Imports: infercnv, NGCHM, coda, argparse, RColorBrewer, futile.logger, methods
+Remotes: github::broadinstitute/infercnv, github::bmbroom/NGCHMR
+Imports: coda, argparse, RColorBrewer, futile.logger, methods
 Collate: 
     'inferCNV_constants.R'
     'NextGenHeatMap.R'
