@@ -14,8 +14,8 @@ LazyData: TRUE
 Suggests: testthat
 RoxygenNote: 6.1.1
 NeedsCompilation: no
-Remotes: github::broadinstitute/infercnv, github::bmbroom/NGCHMR
-Imports: infercnv, NGCHM, coda, argparse, RColorBrewer, futile.logger, methods
+Remotes: github::broadinstitute/infercnv, github::bmbroom/NGCHMR, github::bmbroom/tsvio
+Imports: infercnv, NGCHM, tsvio, argparse, RColorBrewer, futile.logger, methods
 Collate: 
     'inferCNV_constants.R'
     'NextGenHeatMap.R'
