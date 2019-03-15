@@ -493,7 +493,6 @@ setMethod(f="getGenes",
 #' 
 #' @return layer: color mapping object used for NGCHM heatmap generation
 #' 
-#' @exportMethod setColors
 #' @rdname setColors-method
 #' @keywords internal
 #' @noRd
