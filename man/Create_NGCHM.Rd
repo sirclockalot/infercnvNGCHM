@@ -23,7 +23,7 @@ Create_NGCHM(infercnv_obj, path_to_shaidyMapGen, out_dir, title = NULL,
 \item{x.range}{(integer) Values for minimum and maximum thresholds for heatmap coloring.}
 }
 \value{
-Exports a NGCHM file named infercnv.ngchm and saves it to the output directory given to infercnv.
+a NGCHM file named infercnv.ngchm and saves it to the output directory given to infercnv.
 }
 \description{
 Create highly interactive heat maps for single cell expression data using 
