@@ -25,9 +25,9 @@
 NGCHM_inferCNV <- methods::setClass("NGCHM_inferCNV", slots = c( args           = "list",
                                                         low_threshold  = "numeric",
                                                         high_threshold = "numeric",
-                                                        reference_cells = "character",
-                                                        reference_groups = "character"),
-                           contains = "infercnv")
+                                                        reference_cells = "ANY",
+                                                        reference_groups = "ANY"),#"character"),
+                                    contains = "infercnv")
 
 
 #############
@@ -316,6 +316,7 @@ setMethod(f="setNGCHMObject",
               if (!is.null(obj@args$gene_symbol)) {
                   hm <- NGCHM::chmAddAxisType(hm, 'col', obj@args$gene_symbol)
               }
+            return(hm)
           }
 )
 
@@ -380,7 +381,11 @@ setMethod(f="setRows",
               row_groups <- getRowGrouping(obj)
               
               obs_order <- rev(row.names(row_groups)) # Reveerse names to correct order 
-              row_order <- c(as.vector(obj@reference_cells), obs_order) # put the reference cells above the observed cells 
+              if(!is.null(obj@reference_cells)){
+                  row_order <- c(as.vector(obj@reference_cells), obs_order) # put the reference cells above the observed cells 
+              }else{
+                  row_order <- obs_order
+              }
               ## check for correct dimensions of new row order 
               if (length(row_order) != nrow(obj@expr.data)) {
                   stop("Error: After ordering the rows, row length does not match original dimensions of the data.
