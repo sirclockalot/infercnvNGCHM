@@ -1,2 +1,3 @@
-# inferCNV_NGCHM
-inferCNV interface to using NGCHM next generation heat maps
+# infercnvNGCHM
+inferCNV interface to using Next Generation Clustered Heat Maps (NGCHM).
+View the [infercnvNGCHM Wiki page](https://github.com/broadinstitute/infercnvNGCHM/wiki) for more information.
