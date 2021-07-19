@@ -664,10 +664,13 @@ setMethod(f="setRowCovariateBar",
               }
               # get the row grouping information 
               row_groups <- getRowGrouping(obj)
+              colnames(row_groups) <- c("Dendrogram.Group", "Dendrogram.Color", "Annotation.Group", "Annotation.Color")
+              
+              ###############################
+              # Dendrogram: create the dendrogram bar label 
               # create covariate bar from dendrogram groups
               ## row_groups is taken from the dendrogram created by inferCNV
               ## create better column names 
-              colnames(row_groups) <- c("Dendrogram.Group", "Dendrogram.Color", "Annotation.Group", "Annotation.Color")
               dendrogram_col <- as.character(unlist(row_groups["Dendrogram.Color"]))# group colors
               dendrogram_group <- as.character(unlist(row_groups["Dendrogram.Group"]))# group number
               dendrogram_unique_group <- unique(dendrogram_group)
@@ -675,6 +678,7 @@ setMethod(f="setRowCovariateBar",
               names(dendrogram_col) <- cells
               names(dendrogram_group) <- cells
               dendrogram_palette <- get_group_color_palette()(length(unique(dendrogram_col)))
+              
               ## create color mapping
               colMap_dendrogram <- NGCHM::chmNewColorMap(values        = as.vector(dendrogram_unique_group),
                                                          colors        = dendrogram_palette,
@@ -687,29 +691,42 @@ setMethod(f="setRowCovariateBar",
                                               display   = "visible",
                                               thickness = as.integer(20))
               
+              ###############################
+              # Create Reference and Observed covariance bars 
               # Covariate to identify Reference and Observed data
               annotation_col <- as.character(unlist(row_groups["Annotation.Color"])) # group colors
               annotation_group <- as.character(unlist(row_groups["Annotation.Group"]))# group number
               names(annotation_group) <- cells
               names(annotation_col) <- cells
-              annotation_unique_group <- unique(annotation_group)
+              # annotation_unique_group <- unique(annotation_group)
               
-              len <-lengths(obj@reference_grouped_cell_indices)
-              ref_bar_labels <- unlist(sapply(1:length(len), function(x){ rep(obj@reference_groups[x],len[x]) }))
-              
+              #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+              # REFERENCE: Create the labels for the reference bar
+              ref_bar_labels = unname(unlist(obj@reference_grouped_cell_indices))
+              dummy = sapply(names(obj@reference_grouped_cell_indices), function(x){ # ref_bar_labels[ unlist(obj@reference_grouped_cell_indices[x])] <<- x })
+                                                                                            temp_id <- which( ref_bar_labels %in% unlist(obj@reference_grouped_cell_indices[x]) ) 
+                                                                                            ref_bar_labels[ temp_id ] <<- x })
+              # Add the reference cell names
               names(ref_bar_labels) <- obj@reference_cells
+
+              # if you want the exact coloring as the original inferCNV plots
+              #annotation_palette <- c(get_group_color_palette()(length(obj@reference_grouped_cell_indices)), get_group_color_palette()(length(annotation_unique_group))
               
-              # if you want the exact coloring as the original inferCNV plots 
-              #annotation_palette <- c(get_group_color_palette()(length(obj@reference_grouped_cell_indices)), get_group_color_palette()(length(annotation_unique_group)))
+              #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+              # OBSERVED: create labels for the Observed bar
+              obs_bar_labels = unname(unlist(obj@observation_grouped_cell_indices))
+              dummy = sapply(names(obj@observation_grouped_cell_indices), function(x){ # ref_bar_labels[ unlist(obj@reference_grouped_cell_indices[x])] <<- x })
+                                                                                          temp_id <- which( obs_bar_labels %in% unlist(obj@observation_grouped_cell_indices[x]) ) 
+                                                                                          obs_bar_labels[ temp_id ] <<- x })
+              # set the sample names 
+              names(obs_bar_labels) <- row.names(row_groups)
               
-              # combine reference and observed labels 
-              annotation_group <- c(ref_bar_labels,annotation_group)
+              # combine reference and observed labels
+              annotation_group <- c(ref_bar_labels,obs_bar_labels)
               
-              # change the observed group names in bar to group names 
-              observed_data <- obj@observation_grouped_cell_indices
-              lapply(1:length(observed_data), function(x) { 
-                  tmp <- names(observed_data[x])
-                  annotation_group <<- replace(annotation_group, observed_data[[x]], tmp) } )
+              #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+              # OBSERVED: create labels for the Observed bar
+              
               unique_group <- unique(annotation_group)
               annotation_palette <- get_group_color_palette()(length(unique_group))
               
