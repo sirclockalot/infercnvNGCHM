@@ -943,6 +943,6 @@ Create_NGCHM <- function(infercnv_obj,
     # hm  <- setLabelSize(hm, size=10)
     
     futile.logger::flog.info(paste("Saving new NGCHM object"))
-    NGCHM::chmExportToFile(hm, file_path, overwrite = TRUE, shaidyMapGen = path_to_shaidyMapGen)
+    NGCHM::chmExportToFile(hm, file_path, overwrite = TRUE, shaidyMapGen = path_to_shaidyMapGen, shaidyMapGenArgs = "-Djava.awt.headless=true")
 }
 
